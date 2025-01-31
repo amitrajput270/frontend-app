@@ -1,0 +1,89 @@
+/* General Page Styling */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f5f5f5;
+  margin: 0;
+  padding: 0;
+}
+
+/* Centering the Login Card */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* Login Card */
+.login-card {
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  width: 320px;
+  height: 320px;
+}
+
+h2 {
+  color: #333;
+}
+
+/* Input Fields */
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Login Button */
+button {
+  width: 100%;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+/* Print Optimization */
+@media print {
+  body {
+    background-color: white;
+  }
+
+  .login-container {
+    display: block;
+    text-align: center;
+  }
+
+  .login-card {
+    box-shadow: none;
+    border: 1px solid #ddd;
+    width: 100%;
+  }
+
+  form,
+  input,
+  button {
+    display: none;
+  }
+
+  h2 {
+    font-size: 20px;
+    color: #000;
+  }
+}
+.error-message {
+  color: red;
+  font-size: 12px;
+  margin: 5px 0;
+}
