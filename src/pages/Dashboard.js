@@ -13,13 +13,42 @@ const Dashboard = () => {
                 headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
             }).then(response => setUser(response.data));
         } catch (error) {
-            console.error("User not found");
+            if (error.response.status === 401 && error.response.statusText === "Unauthorized") {
+                await axios.post("http://backend-app.localhost/api/logout", {}, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                }).then(() => {
+                    localStorage.removeItem("token");
+                    navigate("/login");
+                });
+            }
+            console.error(error);
         }
-    }, []);
+    }, [navigate]);
 
-    const handleLogout = () => {
-        localStorage.removeItem("token");
-        navigate("/login");
+    const handleLogout = async () => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            console.error("No token found");
+            navigate("/login");
+        }
+
+        try {
+            await axios.post('http://backend-app.localhost/api/logout', {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                }
+            ).then((response) => {
+                localStorage.removeItem("token");
+                navigate("/login");
+            });
+
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     return (
