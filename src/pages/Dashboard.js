@@ -6,49 +6,47 @@ import "../styles/Dashboard.css";
 const Dashboard = () => {
     const [user, setUser] = useState(null);
     const navigate = useNavigate();
-
     useEffect(() => async () => {
-        try {
-            await axios.get("http://backend-app.localhost/api/user", {
-                headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-            }).then(response => setUser(response.data));
-        } catch (error) {
-            if (error.response.status === 401 && error.response.statusText === "Unauthorized") {
-                await axios.post("http://backend-app.localhost/api/logout", {}, {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
-                }).then(() => {
-                    localStorage.removeItem("token");
-                    navigate("/login");
-                });
-            }
-            console.error(error);
-        }
-    }, [navigate]);
-
-    const handleLogout = async () => {
         const token = localStorage.getItem("token");
-        if (!token) {
-            console.error("No token found");
+        if (token === "undefined" || token === null) {
             navigate("/login");
         }
 
-        try {
-            await axios.post('http://backend-app.localhost/api/logout', {},
-                {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
-                }
-            ).then((response) => {
+        await axios.get("http://backend-app.localhost/api/user", {
+            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+        }).then((response) => {
+            if (response.status === 200) {
+                setUser(response.data);
+            } else {
+                console.log("Failed to fetch user data", response);
+            }
+        }).catch((error) => {
+            if (error.response && error.response.status === 401) {
                 localStorage.removeItem("token");
                 navigate("/login");
-            });
+            } else {
+                console.error("Failed to fetch user data", error);
+            }
+        });
+    }, [navigate]);
 
-        } catch (error) {
-            console.error(error);
-        }
+    const handleLogout = async () => {
+        await axios.post('http://backend-app.localhost/api/logout', {},
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            }
+        ).then((response) => {
+            if (response.status === 200) {
+                localStorage.removeItem("token");
+                navigate("/login");
+            } else {
+                console.log("Failed to logout", response);
+            }
+        }).catch((error) => {
+            console.error("Failed to logout", error);
+        });
     };
 
     return (
